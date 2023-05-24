@@ -148,7 +148,7 @@ def ShouldFlipBodies(body1Name, body2Name):
 #example: 2023-02-28T01:55:00Z
 # get the current utc time
 tz = pytz.timezone("America/Los_Angeles")
-ltstart = tz.localize(datetime(2023, 3, 6, 0, 0, 0))
+ltstart = tz.localize(datetime(2023, 5, 22, 0, 0, 0))
 utstart = ltstart.astimezone(pytz.utc)
 td = timedelta(days = 7)
 ltend = ltstart + td
