@@ -1,3 +1,4 @@
+from functools import cmp_to_key
 import requests
 import json
 import pytz
@@ -38,6 +39,66 @@ bodyPriority = {
   "True Node": 15, 
   "Black Moon Lilith": 16
 }
+
+aspectPriority = {
+  "Conjunct": 0,
+  "Opposite": 1,
+  "Square": 2,
+  "Semisquare": 3,
+  "Sesquiquadrate": 4,
+  "Trine": 5,
+  "Sextile": 6,
+  "Quincunx": 7,
+  "Semisextile": 8,
+  "Quintile": 9,
+  "Biquintile": 10,
+  "Septile": 11,
+  "Biseptile": 12,
+  "Triseptile": 13,
+  "Decile": 14,
+  "Novile": 15,
+  "Quindecile": 16
+}
+
+def CompareBodyNames(body1Name, body2Name):
+  if (bodyPriority.get(body1Name) == None and bodyPriority.get(body2Name) == None):
+    if (body1Name.lower() < body2Name.lower()):
+      return -1
+    elif (body1Name.lower() > body2Name.lower()):
+      return 1
+    else:
+      return 0
+  elif (bodyPriority.get(body1Name) != None and bodyPriority.get(body2Name) == None):
+    return -1
+  elif (bodyPriority.get(body1Name) == None and bodyPriority.get(body2Name) != None):
+    return 1
+  else:
+    if (bodyPriority.get(body1Name) < bodyPriority.get(body2Name)):
+      return -1
+    elif (bodyPriority.get(body1Name) > bodyPriority.get(body2Name)):
+      return 1
+    else:
+      return 0
+
+def CompareAspectNames(aspect1Name, aspect2Name):
+  if (aspectPriority.get(aspect1Name) == None and aspectPriority.get(aspect2Name) == None):
+    if (aspect1Name.lower() < aspect2Name.lower()):
+      return -1
+    elif (aspect1Name.lower() > aspect2Name.lower()):
+      return 1
+    else:
+      return 0
+  elif (aspectPriority.get(aspect1Name) != None and aspectPriority.get(aspect2Name) == None):
+    return -1
+  elif (aspectPriority.get(aspect1Name) == None and aspectPriority.get(aspect2Name) != None):
+    return 1
+  else:
+    if (aspectPriority.get(aspect1Name) < aspectPriority.get(aspect2Name)):
+      return -1
+    elif (aspectPriority.get(aspect1Name) > aspectPriority.get(aspect2Name)):
+      return 1
+    else:
+      return 0
 
 class BodyInfo(object):
   name = ""
@@ -103,15 +164,15 @@ class Aspect(object):
   def Name(self):
     return ("{} {} {}".format(self.leftBodyName, self.aspectName, self.rightBodyName))
   
-  def AddTimestamp(self, timestamp:datetime, orb:AspectOrb):
+  def AddTimestamp(self, aspect: WeeklyInLine): #timestamp:datetime, orb:AspectOrb):
     added = False
     for t in self.timestamps:
-      if t.timestampEnd == timestamp - timedelta(hours=1) and not added:
-        t.AddToTimestamp(timestamp, orb)
+      if t.timestampEnd == aspect.timestamp - timedelta(hours=1) and not added:
+        t.AddToTimestamp(aspect) #timestamp, orb)
         added = True
     
     if not added:
-      self.timestamps.append(TimestampRange(timestamp, orb))
+      self.timestamps.append(TimestampRange(aspect)) #timestamp, orb))
 
 class TimestampRange(object):
   timestampStart: datetime = None
@@ -119,34 +180,23 @@ class TimestampRange(object):
   timestampTightestOrb: datetime = None
   tightestOrb:AspectOrb = None
   
-  def __init__(self, timestamp, orb):
-    self.timestampStart = timestamp
-    self.timestampEnd = timestamp
-    self.timestampTightestOrb = timestamp
-    self.tightestOrb = orb    
+  def __init__(self, aspect: WeeklyInLine): # timestamp, orb):
+    self.timestampStart = aspect.timestamp
+    self.timestampEnd = aspect.timestamp
+    self.timestampTightestOrb = aspect.timestamp
+    self.tightestOrb = aspect.orb    
   
-  def AddToTimestamp(self, timestamp, orb:AspectOrb):
-    self.timestampEnd = timestamp
-    if (orb.orbDecimal < self.tightestOrb.orbDecimal):
-      self.tightestOrb = orb
-      self.timestampTightestOrb = timestamp
+  def AddToTimestamp(self, aspect: WeeklyInLine): #timestamp, orb:AspectOrb):
+    self.timestampEnd = aspect.timestamp
+    if (aspect.orb.orbDecimal < self.tightestOrb.orbDecimal):
+      self.tightestOrb = aspect.orb
+      self.timestampTightestOrb = aspect.timestamp
 
   def TimestampRange(self):
     return "{} to {}, tightest at {} ({})".format(self.timestampStart.strftime("%Y-%m-%d %H:%M:%S%z"), self.timestampEnd.strftime("%Y-%m-%d %H:%M:%S%z"), 
                                                   self.timestampTightestOrb.strftime("%Y-%m-%d %H:%M:%S%z"), self.tightestOrb.orb)
 
 # 2023-05-28 03:00:00-07:00: Sun 06 Gem 50'34" Square Saturn 06 Pis 52'20" (Orb 0°01'46")
-# testIn = "2023-05-28 03:00:00-07:00: Sun 06 Gem 50'34\" Square Saturn 06 Pis 52'20\" (Orb 0°01'46\")"
-# testMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) ([a-zA-Z]{3,20}) ([a-zA-Z0-9\s]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) \(Orb (\d{1,2}°\d{2}\'\d{2}")\)', testIn)
-
-# if testMatch:
-#   print(testMatch.group())
-#   print ("parse succeed")
-# else:
-#   print (testIn)
-#   print ("parse failed")
-# test2 = WeeklyInLine(testMatch.group(1), testMatch.group(2), testMatch.group(3), testMatch.group(4), testMatch.group(5), testMatch.group(6), testMatch.group(7) == " Rx", testMatch.group(8),
-#                      testMatch.group(9), testMatch.group(10), testMatch.group(11), testMatch.group(12), testMatch.group(13), testMatch.group(14) == " Rx", testMatch.group(15))
 
 aspectsDict = {}
 
@@ -164,9 +214,12 @@ with open("weeklyout\\2023-05-22-weekly.txt", "r", encoding="utf-8") as r:
       if (aspectEntryText not in aspectsDict):
         aspectsDict[aspectEntryText] = Aspect(parsedAspectLine.leftBody.name, parsedAspectLine.aspectName, parsedAspectLine.rightBody.name)
       
-      aspectsDict[aspectEntryText].AddTimestamp(parsedAspectLine.timestamp, parsedAspectLine.orb)
+      aspectsDict[aspectEntryText].AddTimestamp(parsedAspectLine)#.timestamp, parsedAspectLine.orb)
 
-#aspectsDict = sorted(aspectsDict, key = lambda x: (x.leftBodyName, x.rightBodyName))
+# sort by multiple fields.
+aspectsDict = dict(sorted(aspectsDict.items(), key = cmp_to_key(lambda x, y: (CompareBodyNames(x[1].leftBodyName, y[1].leftBodyName) * 10000 + 
+                                                                   CompareBodyNames(x[1].rightBodyName, y[1].rightBodyName) * 100 +
+                                                                   CompareAspectNames(x[1].aspectName, y[1].aspectName)))))
 
 for a, v in aspectsDict.items():
   print("{}: {} timestamps".format(aspectsDict[a].Name(), len(aspectsDict[a].timestamps)))
