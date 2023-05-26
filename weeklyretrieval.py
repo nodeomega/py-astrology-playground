@@ -170,7 +170,26 @@ while (activeut < utend):
 
   print ("Processing {}...".format(utstring))
   api_url = "http://localhost:7071/api/ViewChart"
-  reqparams = {"args":{"timestamp":utstring,"longitudeDeg":"122","longitudeMin":"20","longitudeSec":"0","longitudeWE":"W","latitudeDeg":"47","latitudeMin":"36","latitudeSec":"0","latitudeNS":"N","ignoreCusps":True,"ignoreAngles":True,"ignoreMinors":False,"includeStars":True,"planetSelection":"with asteroids","maxOrb":"10","asteroidSelection":"3811"}}
+  reqparams = {
+    "args":{
+      "timestamp":utstring,
+      "longitudeDeg":"122",
+      "longitudeMin":"20",
+      "longitudeSec":"0",
+      "longitudeWE":"W",
+      "latitudeDeg":"47",
+      "latitudeMin":"36",
+      "latitudeSec":"0",
+      "latitudeNS":"N",
+      "ignoreCusps":True,
+      "ignoreAngles":True,
+      "ignoreMinors":False,
+      "includeStars":True,
+      "planetSelection":"with asteroids",
+      "maxOrb":"10",
+      "asteroidSelection":"3811"
+      }
+      }
 
   headers = {'Content-type': 'application/json', 'Accept': 'application/json, text/plain, */*'}
   response = requests.post(api_url, json=reqparams, headers=headers)
@@ -184,9 +203,6 @@ while (activeut < utend):
     for t in data["value"]["types"]:
       types.append(Type(t))
 
-    # for t in types:
-    #   print("{} {}".format(t.type, t.typeId))
-
     aspectTypes = []
     for atype in data["value"]["aspectTypes"]:
       aspectTypes.append(AspectType(atype))
@@ -197,9 +213,6 @@ while (activeut < utend):
       thisBody.SetType([type for type in types if type.typeId == thisBody.typeId][0])
       bodies.append(thisBody)
     
-    # for b in bodies:
-    #   print("{} {} {} {}".format(b.name, b.id, b.typeId, b.type.type))
-
     aspectGroups = []
     for ag in data["value"]["aspectGroups"]:
       thisAspectGroup = AspectGroup(ag)
@@ -232,7 +245,5 @@ with open("weeklyout\{:04d}-{:02d}-{:02d}-weekly.txt".format(utstart.year, utsta
   ta: TimedAspect
   for ta in allAspects:
     thisutc = datetime.fromisoformat(ta.timestamp.replace('Z', '+00:00'))
-    thislocal = thisutc.astimezone(tz) #tz.localize(thisutc)
+    thislocal = thisutc.astimezone(tz)
     w.write("{}: {} {} {} {} {} (Orb {})\n".format(thislocal, ta.body1Name, ta.body1Coordinates, ta.aspectName, ta.body2Name, ta.body2Coordinates, ta.orb))
-
-print (ShouldFlipBodies("Pluto", "Sun"))
