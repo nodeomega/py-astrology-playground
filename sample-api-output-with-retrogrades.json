@@ -1,0 +1,710 @@
+{
+  "contentType": null,
+  "serializerSettings": null,
+  "statusCode": null,
+  "value": {
+      "timeIncrements": {
+          "incrementType": "Hours",
+          "incrementAmount": 1
+      },
+      "timeStamps": [
+          {
+              "timestamp": "2023-05-26 04:27:59 -07:00",
+              "id": 0
+          }
+      ],
+      "types": [
+          {
+              "type": "MajorPlanetLuminary",
+              "typeId": 1
+          },
+          {
+              "type": "Asteroid",
+              "typeId": 2
+          },
+          {
+              "type": "FixedStar",
+              "typeId": 4
+          },
+          {
+              "type": "AngleHouseCusp",
+              "typeId": 5
+          },
+          {
+              "type": "Nodes",
+              "typeId": 6
+          }
+      ],
+      "bodies": [
+          {
+              "name": "- 4th",
+              "typeId": 5,
+              "id": 0
+          },
+          {
+              "name": "Chiron",
+              "typeId": 2,
+              "id": 1
+          },
+          {
+              "name": "Jupiter",
+              "typeId": 1,
+              "id": 2
+          },
+          {
+              "name": "True Node",
+              "typeId": 6,
+              "id": 3
+          },
+          {
+              "name": "- 5th",
+              "typeId": 5,
+              "id": 4
+          },
+          {
+              "name": "Mercury",
+              "typeId": 1,
+              "id": 5
+          },
+          {
+              "name": "Uranus",
+              "typeId": 1,
+              "id": 6
+          },
+          {
+              "name": "- 6th",
+              "typeId": 5,
+              "id": 7
+          },
+          {
+              "name": "* Algol",
+              "typeId": 4,
+              "id": 8
+          },
+          {
+              "name": "Sun",
+              "typeId": 1,
+              "id": 9
+          },
+          {
+              "name": "* Aldebaran",
+              "typeId": 4,
+              "id": 10
+          },
+          {
+              "name": "- 7th",
+              "typeId": 5,
+              "id": 11
+          },
+          {
+              "name": "* Sirius",
+              "typeId": 4,
+              "id": 12
+          },
+          {
+              "name": "- 8th",
+              "typeId": 5,
+              "id": 13
+          },
+          {
+              "name": "Venus",
+              "typeId": 1,
+              "id": 14
+          },
+          {
+              "name": "* Pollux",
+              "typeId": 4,
+              "id": 15
+          },
+          {
+              "name": "- Vertex",
+              "typeId": 5,
+              "id": 16
+          },
+          {
+              "name": "Mars",
+              "typeId": 1,
+              "id": 17
+          },
+          {
+              "name": "Black Moon Lilith",
+              "typeId": 2,
+              "id": 18
+          },
+          {
+              "name": "Moon",
+              "typeId": 1,
+              "id": 19
+          },
+          {
+              "name": "* Regulus",
+              "typeId": 4,
+              "id": 20
+          },
+          {
+              "name": "- 9th",
+              "typeId": 5,
+              "id": 21
+          },
+          {
+              "name": "- Midheaven",
+              "typeId": 5,
+              "id": 22
+          },
+          {
+              "name": "* Algorab",
+              "typeId": 4,
+              "id": 23
+          },
+          {
+              "name": "* Spica",
+              "typeId": 4,
+              "id": 24
+          },
+          {
+              "name": "- 11th",
+              "typeId": 5,
+              "id": 25
+          },
+          {
+              "name": "- 12th",
+              "typeId": 5,
+              "id": 26
+          },
+          {
+              "name": "* Antares",
+              "typeId": 4,
+              "id": 27
+          },
+          {
+              "name": "- Ascendant",
+              "typeId": 5,
+              "id": 28
+          },
+          {
+              "name": "* Gal. Center",
+              "typeId": 4,
+              "id": 29
+          },
+          {
+              "name": "* Vega",
+              "typeId": 4,
+              "id": 30
+          },
+          {
+              "name": "- 2nd",
+              "typeId": 5,
+              "id": 31
+          },
+          {
+              "name": "Pluto",
+              "typeId": 1,
+              "id": 32
+          },
+          {
+              "name": "- 3rd",
+              "typeId": 5,
+              "id": 33
+          },
+          {
+              "name": "Saturn",
+              "typeId": 1,
+              "id": 34
+          },
+          {
+              "name": "Neptune",
+              "typeId": 1,
+              "id": 35
+          },
+          {
+              "name": "* Scheat",
+              "typeId": 4,
+              "id": 36
+          }
+      ],
+      "bodyCoordinates": [
+          {
+              "bodyId": 0,
+              "timestampId": 0,
+              "coordinates": "08 Ari 52'33\""
+          },
+          {
+              "bodyId": 1,
+              "timestampId": 0,
+              "coordinates": "18 Ari 34'33\""
+          },
+          {
+              "bodyId": 2,
+              "timestampId": 0,
+              "coordinates": "02 Tau 07'42\""
+          },
+          {
+              "bodyId": 3,
+              "timestampId": 0,
+              "coordinates": "03 Tau 33'48\""
+          },
+          {
+              "bodyId": 4,
+              "timestampId": 0,
+              "coordinates": "05 Tau 26'06\""
+          },
+          {
+              "bodyId": 5,
+              "timestampId": 0,
+              "coordinates": "10 Tau 19'45\""
+          },
+          {
+              "bodyId": 6,
+              "timestampId": 0,
+              "coordinates": "19 Tau 52'34\""
+          },
+          {
+              "bodyId": 7,
+              "timestampId": 0,
+              "coordinates": "25 Tau 34'55\""
+          },
+          {
+              "bodyId": 8,
+              "timestampId": 0,
+              "coordinates": "26 Tau 29'06\""
+          },
+          {
+              "bodyId": 9,
+              "timestampId": 0,
+              "coordinates": "04 Gem 42'03\""
+          },
+          {
+              "bodyId": 10,
+              "timestampId": 0,
+              "coordinates": "10 Gem 06'29\""
+          },
+          {
+              "bodyId": 11,
+              "timestampId": 0,
+              "coordinates": "12 Gem 51'00\""
+          },
+          {
+              "bodyId": 12,
+              "timestampId": 0,
+              "coordinates": "14 Can 23'45\""
+          },
+          {
+              "bodyId": 13,
+              "timestampId": 0,
+              "coordinates": "18 Can 59'15\""
+          },
+          {
+              "bodyId": 14,
+              "timestampId": 0,
+              "coordinates": "19 Can 45'00\""
+          },
+          {
+              "bodyId": 15,
+              "timestampId": 0,
+              "coordinates": "23 Can 31'56\""
+          },
+          {
+              "bodyId": 16,
+              "timestampId": 0,
+              "coordinates": "26 Can 29'25\""
+          },
+          {
+              "bodyId": 17,
+              "timestampId": 0,
+              "coordinates": "03 Leo 10'21\""
+          },
+          {
+              "bodyId": 18,
+              "timestampId": 0,
+              "coordinates": "15 Leo 25'11\""
+          },
+          {
+              "bodyId": 19,
+              "timestampId": 0,
+              "coordinates": "18 Leo 48'26\""
+          },
+          {
+              "bodyId": 20,
+              "timestampId": 0,
+              "coordinates": "00 Vir 09'07\""
+          },
+          {
+              "bodyId": 21,
+              "timestampId": 0,
+              "coordinates": "02 Vir 11'21\""
+          },
+          {
+              "bodyId": 22,
+              "timestampId": 0,
+              "coordinates": "08 Lib 52'33\""
+          },
+          {
+              "bodyId": 23,
+              "timestampId": 0,
+              "coordinates": "13 Lib 46'41\""
+          },
+          {
+              "bodyId": 24,
+              "timestampId": 0,
+              "coordinates": "24 Lib 10'10\""
+          },
+          {
+              "bodyId": 25,
+              "timestampId": 0,
+              "coordinates": "05 Sco 26'06\""
+          },
+          {
+              "bodyId": 26,
+              "timestampId": 0,
+              "coordinates": "25 Sco 34'55\""
+          },
+          {
+              "bodyId": 27,
+              "timestampId": 0,
+              "coordinates": "10 Sag 05'31\""
+          },
+          {
+              "bodyId": 28,
+              "timestampId": 0,
+              "coordinates": "12 Sag 51'00\""
+          },
+          {
+              "bodyId": 29,
+              "timestampId": 0,
+              "coordinates": "27 Sag 10'52\""
+          },
+          {
+              "bodyId": 30,
+              "timestampId": 0,
+              "coordinates": "15 Cap 39'03\""
+          },
+          {
+              "bodyId": 31,
+              "timestampId": 0,
+              "coordinates": "18 Cap 59'15\""
+          },
+          {
+              "bodyId": 32,
+              "timestampId": 0,
+              "coordinates": "00 Aqu 13'39\" Rx"
+          },
+          {
+              "bodyId": 33,
+              "timestampId": 0,
+              "coordinates": "02 Pis 11'21\""
+          },
+          {
+              "bodyId": 34,
+              "timestampId": 0,
+              "coordinates": "06 Pis 47'41\""
+          },
+          {
+              "bodyId": 35,
+              "timestampId": 0,
+              "coordinates": "27 Pis 20'44\""
+          },
+          {
+              "bodyId": 36,
+              "timestampId": 0,
+              "coordinates": "29 Pis 41'43\""
+          }
+      ],
+      "aspectTypes": [
+          {
+              "name": "Semisextile",
+              "id": 0
+          },
+          {
+              "name": "Square",
+              "id": 1
+          },
+          {
+              "name": "Trine",
+              "id": 2
+          },
+          {
+              "name": "Conjunct",
+              "id": 3
+          },
+          {
+              "name": "Sextile",
+              "id": 4
+          },
+          {
+              "name": "Opposite",
+              "id": 5
+          }
+      ],
+      "aspectGroups": [
+          {
+              "id": 0,
+              "body1Id": 1,
+              "body2Id": 6,
+              "aspectTypeId": 0
+          },
+          {
+              "id": 1,
+              "body1Id": 1,
+              "body2Id": 14,
+              "aspectTypeId": 1
+          },
+          {
+              "id": 2,
+              "body1Id": 1,
+              "body2Id": 19,
+              "aspectTypeId": 2
+          },
+          {
+              "id": 3,
+              "body1Id": 2,
+              "body2Id": 3,
+              "aspectTypeId": 3
+          },
+          {
+              "id": 4,
+              "body1Id": 2,
+              "body2Id": 17,
+              "aspectTypeId": 1
+          },
+          {
+              "id": 5,
+              "body1Id": 2,
+              "body2Id": 32,
+              "aspectTypeId": 1
+          },
+          {
+              "id": 6,
+              "body1Id": 2,
+              "body2Id": 34,
+              "aspectTypeId": 4
+          },
+          {
+              "id": 7,
+              "body1Id": 3,
+              "body2Id": 9,
+              "aspectTypeId": 0
+          },
+          {
+              "id": 8,
+              "body1Id": 3,
+              "body2Id": 17,
+              "aspectTypeId": 1
+          },
+          {
+              "id": 9,
+              "body1Id": 5,
+              "body2Id": 34,
+              "aspectTypeId": 4
+          },
+          {
+              "id": 10,
+              "body1Id": 6,
+              "body2Id": 14,
+              "aspectTypeId": 4
+          },
+          {
+              "id": 11,
+              "body1Id": 6,
+              "body2Id": 19,
+              "aspectTypeId": 1
+          },
+          {
+              "id": 12,
+              "body1Id": 9,
+              "body2Id": 17,
+              "aspectTypeId": 4
+          },
+          {
+              "id": 13,
+              "body1Id": 9,
+              "body2Id": 32,
+              "aspectTypeId": 2
+          },
+          {
+              "id": 14,
+              "body1Id": 9,
+              "body2Id": 34,
+              "aspectTypeId": 1
+          },
+          {
+              "id": 15,
+              "body1Id": 14,
+              "body2Id": 19,
+              "aspectTypeId": 0
+          },
+          {
+              "id": 16,
+              "body1Id": 17,
+              "body2Id": 32,
+              "aspectTypeId": 5
+          },
+          {
+              "id": 17,
+              "body1Id": 17,
+              "body2Id": 35,
+              "aspectTypeId": 2
+          },
+          {
+              "id": 18,
+              "body1Id": 32,
+              "body2Id": 35,
+              "aspectTypeId": 4
+          }
+      ],
+      "aspects": [
+          {
+              "timestamp": 0,
+              "orb": "1°18'01\"",
+              "orbDecimal": 1.3002777777777777777777777778,
+              "body1Coordinates": "18 Ari 34'33\"",
+              "body2Coordinates": "19 Tau 52'34\"",
+              "aspectGroupId": 0
+          },
+          {
+              "timestamp": 0,
+              "orb": "1°10'27\"",
+              "orbDecimal": 1.1741666666666666666666666667,
+              "body1Coordinates": "18 Ari 34'33\"",
+              "body2Coordinates": "19 Can 45'00\"",
+              "aspectGroupId": 1
+          },
+          {
+              "timestamp": 0,
+              "orb": "0°13'53\"",
+              "orbDecimal": 0.2313888888888888888888888889,
+              "body1Coordinates": "18 Ari 34'33\"",
+              "body2Coordinates": "18 Leo 48'26\"",
+              "aspectGroupId": 2
+          },
+          {
+              "timestamp": 0,
+              "orb": "1°26'06\"",
+              "orbDecimal": 1.4350000000000000000000000000,
+              "body1Coordinates": "02 Tau 07'42\"",
+              "body2Coordinates": "03 Tau 33'48\"",
+              "aspectGroupId": 3
+          },
+          {
+              "timestamp": 0,
+              "orb": "1°02'39\"",
+              "orbDecimal": 1.0441666666666666666666666666,
+              "body1Coordinates": "02 Tau 07'42\"",
+              "body2Coordinates": "03 Leo 10'21\"",
+              "aspectGroupId": 4
+          },
+          {
+              "timestamp": 0,
+              "orb": "1°54'03\"",
+              "orbDecimal": 1.9008333333333333333333333333,
+              "body1Coordinates": "02 Tau 07'42\"",
+              "body2Coordinates": "00 Aqu 13'39\" Rx",
+              "aspectGroupId": 5
+          },
+          {
+              "timestamp": 0,
+              "orb": "4°39'59\"",
+              "orbDecimal": 4.6663888888888888888888888889,
+              "body1Coordinates": "02 Tau 07'42\"",
+              "body2Coordinates": "06 Pis 47'41\"",
+              "aspectGroupId": 6
+          },
+          {
+              "timestamp": 0,
+              "orb": "1°08'15\"",
+              "orbDecimal": 1.1375000000000000000000000000,
+              "body1Coordinates": "03 Tau 33'48\"",
+              "body2Coordinates": "04 Gem 42'03\"",
+              "aspectGroupId": 7
+          },
+          {
+              "timestamp": 0,
+              "orb": "0°23'27\"",
+              "orbDecimal": 0.3908333333333333333333333333,
+              "body1Coordinates": "03 Tau 33'48\"",
+              "body2Coordinates": "03 Leo 10'21\"",
+              "aspectGroupId": 8
+          },
+          {
+              "timestamp": 0,
+              "orb": "3°32'04\"",
+              "orbDecimal": 3.5344444444444444444444444444,
+              "body1Coordinates": "10 Tau 19'45\"",
+              "body2Coordinates": "06 Pis 47'41\"",
+              "aspectGroupId": 9
+          },
+          {
+              "timestamp": 0,
+              "orb": "0°07'34\"",
+              "orbDecimal": 0.1261111111111111111111111111,
+              "body1Coordinates": "19 Tau 52'34\"",
+              "body2Coordinates": "19 Can 45'00\"",
+              "aspectGroupId": 10
+          },
+          {
+              "timestamp": 0,
+              "orb": "1°04'08\"",
+              "orbDecimal": 1.0688888888888888888888888889,
+              "body1Coordinates": "19 Tau 52'34\"",
+              "body2Coordinates": "18 Leo 48'26\"",
+              "aspectGroupId": 11
+          },
+          {
+              "timestamp": 0,
+              "orb": "1°31'42\"",
+              "orbDecimal": 1.5283333333333333333333333334,
+              "body1Coordinates": "04 Gem 42'03\"",
+              "body2Coordinates": "03 Leo 10'21\"",
+              "aspectGroupId": 12
+          },
+          {
+              "timestamp": 0,
+              "orb": "4°28'24\"",
+              "orbDecimal": 4.4733333333333333333333333334,
+              "body1Coordinates": "04 Gem 42'03\"",
+              "body2Coordinates": "00 Aqu 13'39\" Rx",
+              "aspectGroupId": 13
+          },
+          {
+              "timestamp": 0,
+              "orb": "2°05'38\"",
+              "orbDecimal": 2.0938888888888888888888888889,
+              "body1Coordinates": "04 Gem 42'03\"",
+              "body2Coordinates": "06 Pis 47'41\"",
+              "aspectGroupId": 14
+          },
+          {
+              "timestamp": 0,
+              "orb": "0°56'34\"",
+              "orbDecimal": 0.9427777777777777777777777777,
+              "body1Coordinates": "19 Can 45'00\"",
+              "body2Coordinates": "18 Leo 48'26\"",
+              "aspectGroupId": 15
+          },
+          {
+              "timestamp": 0,
+              "orb": "2°56'42\"",
+              "orbDecimal": 2.9450000000000000000000000000,
+              "body1Coordinates": "03 Leo 10'21\"",
+              "body2Coordinates": "00 Aqu 13'39\" Rx",
+              "aspectGroupId": 16
+          },
+          {
+              "timestamp": 0,
+              "orb": "5°49'37\"",
+              "orbDecimal": 5.8269444444444444444444444445,
+              "body1Coordinates": "03 Leo 10'21\"",
+              "body2Coordinates": "27 Pis 20'44\"",
+              "aspectGroupId": 17
+          },
+          {
+              "timestamp": 0,
+              "orb": "2°52'55\"",
+              "orbDecimal": 2.8819444444444444444444444445,
+              "body1Coordinates": "00 Aqu 13'39\" Rx",
+              "body2Coordinates": "27 Pis 20'44\"",
+              "aspectGroupId": 18
+          }
+      ],
+      "geoCoordinates": "122°20'0\" W, 47°36'0\" N"
+  }
+}

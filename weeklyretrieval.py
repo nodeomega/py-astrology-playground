@@ -1,9 +1,17 @@
 import requests
-import json
 import pytz
 
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+class Type(object):
+  type = ""
+  typeId = 0
+
+  def __init__(self, type):
+    super().__init__()
+    self.type = type["type"]
+    self.typeId = type["typeId"]
 
 class Body(object):
   name = ""
@@ -17,18 +25,19 @@ class Body(object):
     self.id = body["id"]
     self.typeId = body["typeId"]
 
-  def SetType(self, type):
+  def SetType(self, type: Type):
     self.type: Type = type
     self.typeId = type.typeId
 
-class Type(object):
-  type = ""
-  typeId = 0
+class BodyCoordinates(object):
+  body: Body = None
+  timestamp = ""
+  coordinates = ""
 
-  def __init__(self, type):
-    super().__init__()
-    self.type = type["type"]
-    self.typeId = type["typeId"]
+  def __init__(self, body: Body, timestamp, coordinates):
+    self.body = body
+    self.timestamp = timestamp
+    self.coordinates = coordinates
 
 class AspectType(object):
   name = ""
@@ -85,7 +94,16 @@ class Aspect(object):
     self.aspectGroup: AspectGroup = ag
     self.aspectGroupId = ag.id
 
-#print ("{} {} {} {} {} (Orb {})".format(a.aspectGroup.body1.name, a.body1Coordinates, a.aspectGroup.aspectType.name, a.aspectGroup.body2.name, a.body2Coordinates, a.orb))
+class TimedCoordinates(object):
+  timestamp = ""
+  bodyName = ""
+  coordinates = ""
+  
+  def __init__(self, timestamp, bodyName, coordinates):
+    self.timestamp = timestamp
+    self.bodyName = bodyName
+    self.coordinates = coordinates
+
 class TimedAspect(object):
   timestamp = ""
   body1Name = ""
@@ -107,7 +125,19 @@ class TimedAspect(object):
     self.orb = orb
     self.orbDecimal = orbDecimal
 
+class TimedBody(object):
+  timestamp = ""
+  bodyName = ""
+  coordinates = ""
+
+  def __init__(self, timestamp, bodyName, coordinates):
+    self.timestamp = timestamp
+    self.bodyName = bodyName
+    self.coordinates = coordinates
+
 allAspects = []
+allBodies = []
+
 bodyPriority = {
   "Sun": 0, 
   "Moon": 1, 
@@ -146,28 +176,34 @@ def ShouldFlipBodies(body1Name, body2Name):
 
 
 #example: 2023-02-28T01:55:00Z
-# get the current utc time
+# get the desired time zone. I'm in PST/PDT (US), so I set for Los Angeles time.
 tz = pytz.timezone("America/Los_Angeles")
-ltstart = tz.localize(datetime(2023, 5, 22, 0, 0, 0))
+
+# Set the start time. I tend to do these from Monday to Sunday.
+ltstart = tz.localize(datetime(2023, 5, 29, 0, 0, 0))
 utstart = ltstart.astimezone(pytz.utc)
+
+# timedelta for the end date/time calculation (not inclusive)
 td = timedelta(days = 7)
 ltend = ltstart + td
 utend = ltend.astimezone(pytz.utc)
 
 ut = datetime.now(timezone.utc)
 utstring = "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}Z".format(utstart.year, utstart.month, utstart.day, utstart.hour, utstart.minute, utstart.second)
-print (utstring)
+# print (utstring)
 
 utendstring = "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}Z".format(utend.year, utend.month, utend.day, utend.hour, utend.minute, utend.second)
-print (utendstring)
+# print (utendstring)
 
-print("{} - {}".format(ltstart, ltend))
+print("Processing from {} - {}".format(ltstart, ltend))
 
 activeut = utstart
 inctd = timedelta(hours=1)
 while (activeut < utend):
   utstring = "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}Z".format(activeut.year, activeut.month, activeut.day, activeut.hour, activeut.minute, activeut.second)
 
+  #Get the data.
+  # I'm running a local emulation of an azure function for this.
   print ("Processing {}...".format(utstring))
   api_url = "http://localhost:7071/api/ViewChart"
   reqparams = {
@@ -212,7 +248,13 @@ while (activeut < utend):
       thisBody = Body(b)
       thisBody.SetType([type for type in types if type.typeId == thisBody.typeId][0])
       bodies.append(thisBody)
-    
+
+    bodyCoordinates = []
+    for bc in data["value"]["bodyCoordinates"]:
+      targetBody = [body for body in bodies if body.id == bc["bodyId"]][0]
+      thisBodyCoordinates = BodyCoordinates(targetBody, utstring, bc["coordinates"])
+      bodyCoordinates.append(thisBodyCoordinates)
+
     aspectGroups = []
     for ag in data["value"]["aspectGroups"]:
       thisAspectGroup = AspectGroup(ag)
@@ -221,8 +263,8 @@ while (activeut < utend):
       aspectGroups.append(thisAspectGroup)
 
     ag: AspectGroup
-    for ag in aspectGroups:
-      print ("{}: {} {} {}".format(ag.id, ag.body1.name, ag.aspectType.name, ag.body2.name))
+    # for ag in aspectGroups:
+    #   print ("{}: {} {} {}".format(ag.id, ag.body1.name, ag.aspectType.name, ag.body2.name))
 
     aspects = []
     for a in data["value"]["aspects"]:
@@ -232,18 +274,33 @@ while (activeut < utend):
 
     a: Aspect
     for a in aspects:
-      print ("{} {} {} {} {} (Orb {})".format(a.aspectGroup.body1.name, a.body1Coordinates, a.aspectGroup.aspectType.name, a.aspectGroup.body2.name, a.body2Coordinates, a.orb))
+      #print ("{} {} {} {} {} (Orb {})".format(a.aspectGroup.body1.name, a.body1Coordinates, a.aspectGroup.aspectType.name, a.aspectGroup.body2.name, a.body2Coordinates, a.orb))
       if (a.aspectGroup.aspectType.name not in ["Quindecile", "Novile", "Decile"]):
         if (ShouldFlipBodies(a.aspectGroup.body1.name, a.aspectGroup.body2.name) == True):
           allAspects.append(TimedAspect(utstring, a.aspectGroup.body2.name, a.body2Coordinates, a.aspectGroup.aspectType.name, a.aspectGroup.body1.name, a.body1Coordinates, a.orb, a.orbDecimal))
         else:
           allAspects.append(TimedAspect(utstring, a.aspectGroup.body1.name, a.body1Coordinates, a.aspectGroup.aspectType.name, a.aspectGroup.body2.name, a.body2Coordinates, a.orb, a.orbDecimal))
+
+    bc: BodyCoordinates
+    for bc in bodyCoordinates:
+      allBodies.append(TimedBody(utstring, bc.body.name, bc.coordinates))
+
   activeut = activeut + inctd
 
+# Creates the output directory if it doesn't exist. Does nothing if present.
 Path("weeklyout").mkdir(parents=True, exist_ok=True)
-with open("weeklyout\{:04d}-{:02d}-{:02d}-weekly.txt".format(utstart.year, utstart.month, utstart.day), "w", encoding="utf-8") as w:
+
+# Write the weekly aspects file.
+with open("weeklyout\{:04d}-{:02d}-{:02d}-weekly-aspects-table.txt".format(utstart.year, utstart.month, utstart.day), "w", encoding="utf-8") as w:
   ta: TimedAspect
   for ta in allAspects:
     thisutc = datetime.fromisoformat(ta.timestamp.replace('Z', '+00:00'))
     thislocal = thisutc.astimezone(tz)
     w.write("{}: {} {} {} {} {} (Orb {})\n".format(thislocal, ta.body1Name, ta.body1Coordinates, ta.aspectName, ta.body2Name, ta.body2Coordinates, ta.orb))
+
+with open("weeklyout\{:04d}-{:02d}-{:02d}-weekly-bodies-table.txt".format(utstart.year, utstart.month, utstart.day), "w", encoding="utf-8") as w:
+  tb: TimedBody
+  for tb in allBodies:
+    thisutc = datetime.fromisoformat(ta.timestamp.replace('Z', '+00:00'))
+    thislocal = thisutc.astimezone(tz)
+    w.write("{}: {} {}\n".format(thislocal, tb.bodyName, tb.coordinates))
