@@ -1,7 +1,4 @@
 from functools import cmp_to_key
-import requests
-import json
-import pytz
 import re
 from datetime import datetime, timedelta
 
@@ -18,6 +15,21 @@ SignDeg = {
   "Cap": 270,
   "Aqu": 300,
   "Pis": 330
+}
+
+SignFullNames = {
+  "Ari": "Aries",
+  "Tau": "Taurus",
+  "Gem": "Gemini",
+  "Can": "Cancer",
+  "Leo": "Leo",
+  "Vir": "Virgo",
+  "Lib": "Libra",
+  "Sco": "Scorpio",
+  "Sag": "Sagittarius",
+  "Cap": "Capricorn",
+  "Aqu": "Aquarius",
+  "Pis": "Pisces"
 }
 
 bodyPriority = {
@@ -119,6 +131,9 @@ class BodyInfo(object):
 
   def CoordinatesDecimal(self) -> float:
     return (self.degree + SignDeg[self.sign]) + (self.minutes / 60) + (self.seconds / 3600)
+  
+  def CoordinatesString(self) -> str:
+    return ("{} {} {}'{}\"{}".format(self.degree, self.sign, self.minutes, self.seconds, (" Rx" if self.isRetrograde else "")))
 
 class AspectOrb(object):
   orb = ""
@@ -140,7 +155,6 @@ class WeeklyInLine(object):
 
   def __init__(self, timestamp, leftName, leftDegrees, leftSign, leftMinutes, leftSeconds, leftIsRetrograde, aspectName, rightName, rightDegrees, rightSign, rightMinutes, rightSeconds, rightIsRetrograde, orb):
     self.timestampString = timestamp
-    # 2023-05-28 03:00:00-07:00
     if ":" == timestamp[-3:-2]:
       timestamp = timestamp[:-3]+timestamp[-2:]
     self.timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S%z")
@@ -148,6 +162,18 @@ class WeeklyInLine(object):
     self.aspectName = aspectName
     self.rightBody = BodyInfo(rightName, rightDegrees, rightSign, rightMinutes, rightSeconds, rightIsRetrograde)
     self.orb = AspectOrb(orb)
+
+class WeeklyBody(object):
+  timestampString = ""
+  timestamp: datetime = None
+  body: BodyInfo = None
+
+  def __init__(self, timestamp, bodyName, degrees, sign, minutes, seconds, isRetrograde):
+    self.timestampString = timestamp
+    if ":" == timestamp[-3:-2]:
+      timestamp = timestamp[:-3]+timestamp[-2:]
+    self.timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S%z")
+    self.body = BodyInfo(bodyName, degrees, sign, minutes, seconds, isRetrograde)
   
 class Aspect(object):
   leftBodyName = ""
@@ -164,7 +190,7 @@ class Aspect(object):
   def Name(self):
     return ("{} {} {}".format(self.leftBodyName, self.aspectName, self.rightBodyName))
   
-  def AddTimestamp(self, aspect: WeeklyInLine): #timestamp:datetime, orb:AspectOrb):
+  def AddTimestamp(self, aspect: WeeklyInLine):
     added = False
     for t in self.timestamps:
       if t.timestampEnd == aspect.timestamp - timedelta(hours=1) and not added:
@@ -172,9 +198,30 @@ class Aspect(object):
         added = True
     
     if not added:
-      self.timestamps.append(TimestampRange(aspect)) #timestamp, orb))
+      self.timestamps.append(AspectTimestampRange(aspect))
 
-class TimestampRange(object):
+class Body(object):
+  bodyName = ""
+  timestamps = []
+  
+  def __init__(self, bodyName):
+    self.bodyName = bodyName
+    self.timestamps = []
+  
+  def Name(self):
+    return("{}".format(self.bodyName))
+  
+  def AddData(self, body: WeeklyBody):
+    added = False
+    for t in self.timestamps:
+      if t.timestampEnd == body.timestamp - timedelta(hours=1) and not added:
+        t.AddToTimestamp(body)
+        added = True
+      
+    if not added:
+      self.timestamps.append(BodyTimestampRange(body))
+
+class AspectTimestampRange(object):
   timestampStart: datetime = None
   timestampEnd: datetime = None
   timestampTightestOrb: datetime = None
@@ -195,12 +242,51 @@ class TimestampRange(object):
   def TimestampRange(self):
     return "{} to {}, tightest at {} ({})".format(self.timestampStart.strftime("%Y-%m-%d %H:%M:%S%z"), self.timestampEnd.strftime("%Y-%m-%d %H:%M:%S%z"), 
                                                   self.timestampTightestOrb.strftime("%Y-%m-%d %H:%M:%S%z"), self.tightestOrb.orb)
+  
+class BodyTimestampRange(object):
+  timestampStart: datetime = None
+  timestampEnd: datetime = None
+  infoStart:BodyInfo = None
+  infoEnd:BodyInfo = None
+  retrogradeChange = {}
+  signChange = {}
 
-# 2023-05-28 03:00:00-07:00: Sun 06 Gem 50'34" Square Saturn 06 Pis 52'20" (Orb 0°01'46")
+  def __init__(self, body: WeeklyBody):
+    self.timestampStart = body.timestamp
+    self.timestampEnd = body.timestamp
+    self.infoStart = body.body
+    self.infoEnd = body.body
+    self.retrogradeChange = {}
+    self.signChange = {}
+
+  def AddToTimestamp(self, body: WeeklyBody):
+    self.timestampEnd = body.timestamp
+    # Check for retrograde cycle and sign changes.
+    if (self.infoEnd.isRetrograde != body.body.isRetrograde):
+      if (self.infoEnd.isRetrograde):
+        self.retrogradeChange[body.timestampString] = "{} retrograde ends".format(body.body.name)
+      else:
+        self.retrogradeChange[body.timestampString] = "{} retrograde begins".format(body.body.name)
+
+    if (self.infoEnd.sign != body.body.sign):
+      self.signChange[body.timestampString] = "{} enters {}".format(body.body.name, SignFullNames[body.body.sign])
+
+    self.infoEnd = body.body
+
+  def AllChanges(self):
+    result = ""
+    if len(self.retrogradeChange) > 0:
+      for r, v in self.retrogradeChange.items():
+        result += "{}: {}\n".format(r, v)
+
+    if len(self.signChange) > 0:
+      for s, v in self.signChange.items():
+        result += "{}: {}\n".format(s, v)
+
+    return result
 
 aspectsDict = {}
-
-with open("weeklyout\\2023-05-22-weekly.txt", "r", encoding="utf-8") as r:
+with open("weeklyout\\2023-05-29-weekly-aspects-table.txt", "r", encoding="utf-8") as r:
   aspectsLog = r.readlines()
 
   for line in aspectsLog:
@@ -225,3 +311,31 @@ for a, v in aspectsDict.items():
   print("{}: {} timestamps".format(aspectsDict[a].Name(), len(aspectsDict[a].timestamps)))
   for t in aspectsDict[a].timestamps:
     print("{}".format(t.TimestampRange()))
+
+bodiesDict = {}
+with open("weeklyout\\2023-05-29-weekly-bodies-table.txt", "r", encoding="utf-8") as r:
+  bodiesLog = r.readlines()
+
+  for line in bodiesLog:
+    bodyMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s\*\-]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3})', line)
+
+    if bodyMatch:
+      if bodyMatch.group(2).startswith("- "):
+        continue
+
+      parsedBodyLine = WeeklyBody(bodyMatch.group(1), bodyMatch.group(2), bodyMatch.group(3), bodyMatch.group(4), bodyMatch.group(5), bodyMatch.group(6), bodyMatch.group(7) == " Rx")
+
+      bodyEntryText = "{}".format(parsedBodyLine.body.name)
+      if (bodyEntryText not in bodiesDict):
+        bodiesDict[bodyEntryText] = Body(parsedBodyLine.body.name)
+        
+      bodiesDict[bodyEntryText].AddData(parsedBodyLine)
+
+for b, v in bodiesDict.items():
+  print("{}:".format(bodiesDict[b].Name()))
+  for t in bodiesDict[b].timestamps:
+    outline = t.AllChanges()
+    if outline != "":
+      print("{}".format(outline))
+    else:
+      print("- No direction or sign changes.\n")

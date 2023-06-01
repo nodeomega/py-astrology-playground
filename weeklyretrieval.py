@@ -301,6 +301,6 @@ with open("weeklyout\{:04d}-{:02d}-{:02d}-weekly-aspects-table.txt".format(utsta
 with open("weeklyout\{:04d}-{:02d}-{:02d}-weekly-bodies-table.txt".format(utstart.year, utstart.month, utstart.day), "w", encoding="utf-8") as w:
   tb: TimedBody
   for tb in allBodies:
-    thisutc = datetime.fromisoformat(ta.timestamp.replace('Z', '+00:00'))
+    thisutc = datetime.fromisoformat(tb.timestamp.replace('Z', '+00:00'))
     thislocal = thisutc.astimezone(tz)
     w.write("{}: {} {}\n".format(thislocal, tb.bodyName, tb.coordinates))
