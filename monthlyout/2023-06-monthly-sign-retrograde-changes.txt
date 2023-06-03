@@ -1,0 +1,109 @@
+Chiron:
+- No direction or sign changes.
+
+Jupiter:
+- No direction or sign changes.
+
+True Node:
+- No direction or sign changes.
+
+Mercury:
+2023-06-11 04:00:00-07:00: Mercury enters Gemini
+2023-06-26 18:00:00-07:00: Mercury enters Cancer
+
+Uranus:
+- No direction or sign changes.
+
+Vesta:
+2023-06-22 13:00:00-07:00: Vesta enters Gemini
+
+* Algol:
+- No direction or sign changes.
+
+128 Nemesis:
+- No direction or sign changes.
+
+* Aldebaran:
+- No direction or sign changes.
+
+Sun:
+2023-06-21 08:00:00-07:00: Sun enters Cancer
+
+Juno:
+2023-06-22 05:00:00-07:00: Juno enters Cancer
+
+* Sirius:
+- No direction or sign changes.
+
+* Pollux:
+- No direction or sign changes.
+
+Venus:
+2023-06-05 07:00:00-07:00: Venus enters Leo
+
+Mars:
+- No direction or sign changes.
+
+Pallas:
+- No direction or sign changes.
+
+Black Moon Lilith:
+- No direction or sign changes.
+
+* Regulus:
+- No direction or sign changes.
+
+Ceres:
+2023-06-21 05:00:00-07:00: Ceres enters Libra
+
+* Algorab:
+- No direction or sign changes.
+
+* Spica:
+- No direction or sign changes.
+
+Moon:
+2023-06-02 23:00:00-07:00: Moon enters Sagittarius
+2023-06-05 01:00:00-07:00: Moon enters Capricorn
+2023-06-07 02:00:00-07:00: Moon enters Aquarius
+2023-06-09 04:00:00-07:00: Moon enters Pisces
+2023-06-11 07:00:00-07:00: Moon enters Aries
+2023-06-13 12:00:00-07:00: Moon enters Taurus
+2023-06-15 19:00:00-07:00: Moon enters Gemini
+2023-06-18 04:00:00-07:00: Moon enters Cancer
+2023-06-20 16:00:00-07:00: Moon enters Leo
+2023-06-23 04:00:00-07:00: Moon enters Virgo
+2023-06-25 16:00:00-07:00: Moon enters Libra
+2023-06-28 02:00:00-07:00: Moon enters Scorpio
+2023-06-30 08:00:00-07:00: Moon enters Sagittarius
+
+* Antares:
+- No direction or sign changes.
+
+Pholus:
+- No direction or sign changes.
+
+* Vega:
+- No direction or sign changes.
+
+Pluto:
+2023-06-11 03:00:00-07:00: Pluto enters Capricorn
+
+157 Dejanira:
+- No direction or sign changes.
+
+Saturn:
+2023-06-17 11:00:00-07:00: Saturn retrograde begins
+
+3811 Karma:
+- No direction or sign changes.
+
+7066 Nessus:
+2023-06-17 23:00:00-07:00: 7066 Nessus retrograde begins
+
+Neptune:
+2023-06-30 15:00:00-07:00: Neptune retrograde begins
+
+* Scheat:
+- No direction or sign changes.
+
