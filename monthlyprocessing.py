@@ -286,9 +286,11 @@ class BodyTimestampRange(object):
 
     return result
 
+processDateTime = datetime(2023, 12, 1, 0, 0, 0)
+
 aspectsDict = {}
 
-with open("monthlyout\\2023-06-01-monthly-aspects-table.txt", "r", encoding="utf-8") as r:
+with open("monthlyout\\{:04d}-{:02d}-01-monthly-aspects-table.txt".format(processDateTime.year, processDateTime.month), "r", encoding="utf-8") as r:
   aspectsLog = r.readlines()
 
   for line in aspectsLog:
@@ -310,7 +312,7 @@ aspectsDict = dict(sorted(aspectsDict.items(), key = cmp_to_key(lambda x, y: (Co
                                                                    CompareAspectNames(x[1].aspectName, y[1].aspectName)))))
 
 bodiesDict = {}
-with open("monthlyout\\2023-06-01-monthly-bodies-table.txt", "r", encoding="utf-8") as r:
+with open("monthlyout\\{:04d}-{:02d}-01-monthly-bodies-table.txt".format(processDateTime.year, processDateTime.month), "r", encoding="utf-8") as r:
   bodiesLog = r.readlines()
 
   for line in bodiesLog:
@@ -329,14 +331,14 @@ with open("monthlyout\\2023-06-01-monthly-bodies-table.txt", "r", encoding="utf-
       bodiesDict[bodyEntryText].AddData(parsedBodyLine)
 
 Path("monthlyout").mkdir(parents=True, exist_ok=True)
-with open("monthlyout\\2023-06-monthly-aspects.txt", "w", encoding="utf-8") as w:
+with open("monthlyout\\{:04d}-{:02d}-monthly-aspects.txt".format(processDateTime.year, processDateTime.month), "w", encoding="utf-8") as w:
   for a, v in aspectsDict.items():
     w.write("{}:\n".format(aspectsDict[a].Name()))
     for t in aspectsDict[a].timestamps:
       w.write("  {}\n".format(t.TimestampRange()))
     w.write("\n")
 
-with open("monthlyout\\2023-06-monthly-sign-retrograde-changes.txt", "w", encoding="utf-8") as w:
+with open("monthlyout\\{:04d}-{:02d}-monthly-sign-retrograde-changes.txt".format(processDateTime.year, processDateTime.month), "w", encoding="utf-8") as w:
   for b, v in bodiesDict.items():
     w.write("{}:\n".format(bodiesDict[b].Name()))
     for t in bodiesDict[b].timestamps:
@@ -345,8 +347,3 @@ with open("monthlyout\\2023-06-monthly-sign-retrograde-changes.txt", "w", encodi
         w.write("{}\n".format(outline))
       else:
         w.write("- No direction or sign changes.\n\n")
-  # for b, v in bodiesDict.items():
-  #   w.write("{}:\n".format(bodiesDict[b].Name()))
-  #   for t in bodiesDict[a].timestamps:
-  #     w.write("  {}\n".format(t.TimestampRange()))
-  #   w.write("\n")

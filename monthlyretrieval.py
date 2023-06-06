@@ -14,7 +14,7 @@ allBodies = []
 #example: 2023-02-28T01:55:00Z
 # get the current utc time
 tz = pytz.timezone("America/Los_Angeles")
-ltstart = tz.localize(datetime(2023, 6, 1, 0, 0, 0))
+ltstart = tz.localize(datetime(2023, 12, 1, 0, 0, 0))
 utstart = ltstart.astimezone(pytz.utc)
 
 #Set to 31 days, as we don't have a months option.
