@@ -6,7 +6,7 @@ from pathlib import Path
 
 #import all of the types from astroRetrievalTypes
 from astrolib.astroRetrievalTypes import *
-from astrolib.astroRetrievalFuncs import ShouldFlipBodies, FormatDateTimeString
+from astrolib.astroRetrievalFuncs import ShouldFlipBodies, FormatDateTimeString, SetWeekDateRangeAndTimeZone
 
 allAspects = []
 allBodies = []
@@ -50,30 +50,19 @@ def ShouldFlipBodies(body1Name, body2Name):
 
 #example: 2023-02-28T01:55:00Z
 # get the desired time zone. I'm in PST/PDT (US), so I set for Los Angeles time.
-tz = pytz.timezone("America/Los_Angeles")
-
 # Set the start time. I tend to do these from Monday to Sunday.
-ltstart = tz.localize(datetime(2023, 6, 5, 0, 0, 0))
-utstart = ltstart.astimezone(pytz.utc)
+# start datetime is inclusive, end datetime is exclusive for retrieval.
+tz, ltstart, ltend, utstart, utend = SetWeekDateRangeAndTimeZone("America/Los_Angeles", datetime(2023, 6, 12, 0, 0, 0))
 
-# timedelta for the end date/time calculation (not inclusive)
-td = timedelta(days = 7)
-ltend = ltstart + td
-utend = ltend.astimezone(pytz.utc)
-
-ut = datetime.now(timezone.utc)
-utstring = FormatDateTimeString(utstart) #"{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}Z".format(utstart.year, utstart.month, utstart.day, utstart.hour, utstart.minute, utstart.second)
-# print (utstring)
-
-utendstring = FormatDateTimeString(utend) #"{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}Z".format(utend.year, utend.month, utend.day, utend.hour, utend.minute, utend.second)
-# print (utendstring)
+utstring = FormatDateTimeString(utstart) 
+utendstring = FormatDateTimeString(utend) 
 
 print("Processing from {} - {}".format(ltstart, ltend))
 
 activeut = utstart
 inctd = timedelta(hours=1)
 while (activeut < utend):
-  utstring = FormatDateTimeString(activeut) #"{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}Z".format(activeut.year, activeut.month, activeut.day, activeut.hour, activeut.minute, activeut.second)
+  utstring = FormatDateTimeString(activeut)
 
   #Get the data.
   # I'm running a local emulation of an azure function for this.

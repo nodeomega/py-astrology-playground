@@ -6,28 +6,15 @@ from pathlib import Path
 
 #import all of the types from astroRetrievalTypes
 from astrolib.astroRetrievalTypes import *
-from astrolib.astroRetrievalFuncs import ShouldFlipBodies, FormatDateTimeString
+from astrolib.astroRetrievalFuncs import ShouldFlipBodies, FormatDateTimeString, SetMonthDateRangeAndTimeZone
 
 allAspects = []
 allBodies = []
 
 #example: 2023-02-28T01:55:00Z
 # get the current utc time
-tz = pytz.timezone("America/Los_Angeles")
-ltstart = tz.localize(datetime(2023, 12, 1, 0, 0, 0))
-utstart = ltstart.astimezone(pytz.utc)
+tz, ltstart, ltend, utstart, utend = SetMonthDateRangeAndTimeZone("America/Los_Angeles", datetime(2023, 11, 1, 0, 0, 0))
 
-#Set to 31 days, as we don't have a months option.
-td = timedelta(days = 31)
-ltend = ltstart + td
-
-# If the end date goes past the first of the following month (i.e. 28-30 day month), 
-# reset the end date to the first of the following month.
-while ltend.day > 1:
-  ltend = ltend - timedelta(days = 1)
-utend = ltend.astimezone(pytz.utc)
-
-#ut = datetime.now(timezone.utc)
 utstring = FormatDateTimeString(utstart) # "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}Z".format(utstart.year, utstart.month, utstart.day, utstart.hour, utstart.minute, utstart.second)
 
 utendstring = FormatDateTimeString(utend) # "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}Z".format(utend.year, utend.month, utend.day, utend.hour, utend.minute, utend.second)

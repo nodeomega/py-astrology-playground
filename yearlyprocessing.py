@@ -132,9 +132,6 @@ class BodyInfo(object):
 
   def CoordinatesDecimal(self) -> float:
     return (self.degree + SignDeg[self.sign]) + (self.minutes / 60) + (self.seconds / 3600)
-  
-  def CoordinatesString(self) -> str:
-    return ("{} {} {}'{}\"{}".format(self.degree, self.sign, self.minutes, self.seconds, (" Rx" if self.isRetrograde else "")))
 
 class AspectOrb(object):
   orb = ""
@@ -146,7 +143,7 @@ class AspectOrb(object):
     if orbRegexMatch:
       self.orbDecimal = float(orbRegexMatch.group(1)) + (float(orbRegexMatch.group(2)) / 60) + (float(orbRegexMatch.group(3)) / 3600)
 
-class WeeklyInLine(object):
+class YearlyInLine(object):
   timestampString = ""
   timestamp: datetime = None
   leftBody: BodyInfo = None
@@ -156,6 +153,7 @@ class WeeklyInLine(object):
 
   def __init__(self, timestamp, leftName, leftDegrees, leftSign, leftMinutes, leftSeconds, leftIsRetrograde, aspectName, rightName, rightDegrees, rightSign, rightMinutes, rightSeconds, rightIsRetrograde, orb):
     self.timestampString = timestamp
+    # 2023-05-28 03:00:00-07:00
     if ":" == timestamp[-3:-2]:
       timestamp = timestamp[:-3]+timestamp[-2:]
     self.timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S%z")
@@ -164,7 +162,7 @@ class WeeklyInLine(object):
     self.rightBody = BodyInfo(rightName, rightDegrees, rightSign, rightMinutes, rightSeconds, rightIsRetrograde)
     self.orb = AspectOrb(orb)
 
-class WeeklyBody(object):
+class YearlyBody(object):
   timestampString = ""
   timestamp: datetime = None
   body: BodyInfo = None
@@ -175,7 +173,7 @@ class WeeklyBody(object):
       timestamp = timestamp[:-3]+timestamp[-2:]
     self.timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S%z")
     self.body = BodyInfo(bodyName, degrees, sign, minutes, seconds, isRetrograde)
-  
+
 class Aspect(object):
   leftBodyName = ""
   aspectName = ""
@@ -191,7 +189,7 @@ class Aspect(object):
   def Name(self):
     return ("{} {} {}".format(self.leftBodyName, self.aspectName, self.rightBodyName))
   
-  def AddTimestamp(self, aspect: WeeklyInLine):
+  def AddTimestamp(self, aspect: YearlyInLine): #timestamp:datetime, orb:AspectOrb):
     added = False
     for t in self.timestamps:
       if t.timestampEnd == aspect.timestamp - timedelta(hours=1) and not added:
@@ -199,7 +197,7 @@ class Aspect(object):
         added = True
     
     if not added:
-      self.timestamps.append(AspectTimestampRange(aspect))
+      self.timestamps.append(AspectTimestampRange(aspect)) #timestamp, orb))
 
 class Body(object):
   bodyName = ""
@@ -212,7 +210,7 @@ class Body(object):
   def Name(self):
     return("{}".format(self.bodyName))
   
-  def AddData(self, body: WeeklyBody):
+  def AddData(self, body: YearlyBody):
     added = False
     for t in self.timestamps:
       if t.timestampEnd == body.timestamp - timedelta(hours=1) and not added:
@@ -228,13 +226,13 @@ class AspectTimestampRange(object):
   timestampTightestOrb: datetime = None
   tightestOrb:AspectOrb = None
   
-  def __init__(self, aspect: WeeklyInLine): # timestamp, orb):
+  def __init__(self, aspect: YearlyInLine): # timestamp, orb):
     self.timestampStart = aspect.timestamp
     self.timestampEnd = aspect.timestamp
     self.timestampTightestOrb = aspect.timestamp
     self.tightestOrb = aspect.orb    
   
-  def AddToTimestamp(self, aspect: WeeklyInLine): #timestamp, orb:AspectOrb):
+  def AddToTimestamp(self, aspect: YearlyInLine): #timestamp, orb:AspectOrb):
     self.timestampEnd = aspect.timestamp
     if (aspect.orb.orbDecimal < self.tightestOrb.orbDecimal):
       self.tightestOrb = aspect.orb
@@ -243,7 +241,9 @@ class AspectTimestampRange(object):
   def TimestampRange(self):
     return "{} to {}, tightest at {} ({})".format(self.timestampStart.strftime("%Y-%m-%d %H:%M:%S%z"), self.timestampEnd.strftime("%Y-%m-%d %H:%M:%S%z"), 
                                                   self.timestampTightestOrb.strftime("%Y-%m-%d %H:%M:%S%z"), self.tightestOrb.orb)
-  
+
+# 2023-05-28 03:00:00-07:00: Sun 06 Gem 50'34" Square Saturn 06 Pis 52'20" (Orb 0°01'46")
+
 class BodyTimestampRange(object):
   timestampStart: datetime = None
   timestampEnd: datetime = None
@@ -252,7 +252,7 @@ class BodyTimestampRange(object):
   retrogradeChange = {}
   signChange = {}
 
-  def __init__(self, body: WeeklyBody):
+  def __init__(self, body: YearlyBody):
     self.timestampStart = body.timestamp
     self.timestampEnd = body.timestamp
     self.infoStart = body.body
@@ -260,7 +260,7 @@ class BodyTimestampRange(object):
     self.retrogradeChange = {}
     self.signChange = {}
 
-  def AddToTimestamp(self, body: WeeklyBody):
+  def AddToTimestamp(self, body: YearlyBody):
     self.timestampEnd = body.timestamp
     # Check for retrograde cycle and sign changes.
     if (self.infoEnd.isRetrograde != body.body.isRetrograde):
@@ -286,72 +286,66 @@ class BodyTimestampRange(object):
 
     return result
 
-processDateTime = datetime(2023, 6, 12, 0, 0, 0)
+# range(x,y) is beginning inclusive, end exclusive (so will stop at 12 (December))
 
 aspectsDict = {}
-with open("weeklyout\\{:04d}-{:02d}-{:02d}-weekly-aspects-table.txt".format(processDateTime.year, processDateTime.month, processDateTime.day), "r", encoding="utf-8") as r:
-  aspectsLog = r.readlines()
-
-  for line in aspectsLog:
-    aspectMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) ([a-zA-Z]{3,20}) ([a-zA-Z0-9\s]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) \(Orb (\d{1,2}°\d{2}\'\d{2}")\)', line)
-
-    if aspectMatch:
-      parsedAspectLine = WeeklyInLine(aspectMatch.group(1), aspectMatch.group(2), aspectMatch.group(3), aspectMatch.group(4), aspectMatch.group(5), aspectMatch.group(6), aspectMatch.group(7) == " Rx", aspectMatch.group(8),
-                                      aspectMatch.group(9), aspectMatch.group(10), aspectMatch.group(11), aspectMatch.group(12), aspectMatch.group(13), aspectMatch.group(14) == " Rx", aspectMatch.group(15))
-    
-      aspectEntryText = "{} {} {}".format(parsedAspectLine.leftBody.name, parsedAspectLine.aspectName, parsedAspectLine.rightBody.name)
-      if (aspectEntryText not in aspectsDict):
-        aspectsDict[aspectEntryText] = Aspect(parsedAspectLine.leftBody.name, parsedAspectLine.aspectName, parsedAspectLine.rightBody.name)
-      
-      aspectsDict[aspectEntryText].AddTimestamp(parsedAspectLine)#.timestamp, parsedAspectLine.orb)
-
-# sort by multiple fields.
-aspectsDict = dict(sorted(aspectsDict.items(), key = cmp_to_key(lambda x, y: (CompareBodyNames(x[1].leftBodyName, y[1].leftBodyName) * 10000 + 
-                                                                   CompareBodyNames(x[1].rightBodyName, y[1].rightBodyName) * 100 +
-                                                                   CompareAspectNames(x[1].aspectName, y[1].aspectName)))))
-
-# for a, v in aspectsDict.items():
-#   print("{}: {} timestamps".format(aspectsDict[a].Name(), len(aspectsDict[a].timestamps)))
-#   for t in aspectsDict[a].timestamps:
-#     print("{}".format(t.TimestampRange()))
-
 bodiesDict = {}
-with open("weeklyout\\{:04d}-{:02d}-{:02d}-weekly-bodies-table.txt".format(processDateTime.year, processDateTime.month, processDateTime.day), "r", encoding="utf-8") as r:
-  bodiesLog = r.readlines()
 
-  for line in bodiesLog:
-    bodyMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s\*\-]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3})', line)
+# Compile all of the monthly scans for the year, month by month.
+for currentMonth in range(6, 13):
+  processDateTime = datetime(2023, currentMonth, 1, 0, 0, 0)
 
-    if bodyMatch:
-      if bodyMatch.group(2).startswith("- "):
-        continue
+  Path("monthlyout").mkdir(parents=True, exist_ok=True)
 
-      parsedBodyLine = WeeklyBody(bodyMatch.group(1), bodyMatch.group(2), bodyMatch.group(3), bodyMatch.group(4), bodyMatch.group(5), bodyMatch.group(6), bodyMatch.group(7) == " Rx")
+  with open("monthlyout\\{:04d}-{:02d}-01-monthly-aspects-table.txt".format(processDateTime.year, processDateTime.month), "r", encoding="utf-8") as r:
+    aspectsLog = r.readlines()
 
-      bodyEntryText = "{}".format(parsedBodyLine.body.name)
-      if (bodyEntryText not in bodiesDict):
-        bodiesDict[bodyEntryText] = Body(parsedBodyLine.body.name)
+    for line in aspectsLog:
+      aspectMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) ([a-zA-Z]{3,20}) ([a-zA-Z0-9\s]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) \(Orb (\d{1,2}°\d{2}\'\d{2}")\)', line)
+
+      if aspectMatch:
+        parsedAspectLine = YearlyInLine(aspectMatch.group(1), aspectMatch.group(2), aspectMatch.group(3), aspectMatch.group(4), aspectMatch.group(5), aspectMatch.group(6), aspectMatch.group(7) == " Rx", aspectMatch.group(8),
+                                        aspectMatch.group(9), aspectMatch.group(10), aspectMatch.group(11), aspectMatch.group(12), aspectMatch.group(13), aspectMatch.group(14) == " Rx", aspectMatch.group(15))
+      
+        aspectEntryText = "{} {} {}".format(parsedAspectLine.leftBody.name, parsedAspectLine.aspectName, parsedAspectLine.rightBody.name)
+        if (aspectEntryText not in aspectsDict):
+          aspectsDict[aspectEntryText] = Aspect(parsedAspectLine.leftBody.name, parsedAspectLine.aspectName, parsedAspectLine.rightBody.name)
         
-      bodiesDict[bodyEntryText].AddData(parsedBodyLine)
+        aspectsDict[aspectEntryText].AddTimestamp(parsedAspectLine)#.timestamp, parsedAspectLine.orb)
 
-# for b, v in bodiesDict.items():
-#   print("{}:".format(bodiesDict[b].Name()))
-#   for t in bodiesDict[b].timestamps:
-#     outline = t.AllChanges()
-#     if outline != "":
-#       print("{}".format(outline))
-#     else:
-#       print("- No direction or sign changes.\n")
+  # sort by multiple fields.
+  aspectsDict = dict(sorted(aspectsDict.items(), key = cmp_to_key(lambda x, y: (CompareBodyNames(x[1].leftBodyName, y[1].leftBodyName) * 10000 + 
+                                                                    CompareBodyNames(x[1].rightBodyName, y[1].rightBodyName) * 100 +
+                                                                    CompareAspectNames(x[1].aspectName, y[1].aspectName)))))
 
-Path("weeklyout").mkdir(parents=True, exist_ok=True)
-with open("weeklyout\\{:04d}-{:02d}-{:02d}-weekly-aspects.txt".format(processDateTime.year, processDateTime.month, processDateTime.day), "w", encoding="utf-8") as w:
+  with open("monthlyout\\{:04d}-{:02d}-01-monthly-bodies-table.txt".format(processDateTime.year, processDateTime.month), "r", encoding="utf-8") as r:
+    bodiesLog = r.readlines()
+
+    for line in bodiesLog:
+      bodyMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s\*\-]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3})', line)
+
+      if bodyMatch:
+        if bodyMatch.group(2).startswith("- "):
+          continue
+
+        parsedBodyLine = YearlyBody(bodyMatch.group(1), bodyMatch.group(2), bodyMatch.group(3), bodyMatch.group(4), bodyMatch.group(5), bodyMatch.group(6), bodyMatch.group(7) == " Rx")
+
+        bodyEntryText = "{}".format(parsedBodyLine.body.name)
+        if (bodyEntryText not in bodiesDict):
+          bodiesDict[bodyEntryText] = Body(parsedBodyLine.body.name)
+          
+        bodiesDict[bodyEntryText].AddData(parsedBodyLine)
+
+#Combine into yearly reports.
+Path("yearlyout").mkdir(parents=True, exist_ok=True)
+with open("yearlyout\\{:04d}-yearly-aspects.txt".format(processDateTime.year), "w", encoding="utf-8") as w:
   for a, v in aspectsDict.items():
     w.write("{}:\n".format(aspectsDict[a].Name()))
     for t in aspectsDict[a].timestamps:
       w.write("  {}\n".format(t.TimestampRange()))
     w.write("\n")
 
-with open("weeklyout\\{:04d}-{:02d}-{:02d}-weekly-sign-retrograde-changes.txt".format(processDateTime.year, processDateTime.month, processDateTime.day), "w", encoding="utf-8") as w:
+with open("yearlyout\\{:04d}-yearly-sign-retrograde-changes.txt".format(processDateTime.year), "w", encoding="utf-8") as w:
   for b, v in bodiesDict.items():
     w.write("{}:\n".format(bodiesDict[b].Name()))
     for t in bodiesDict[b].timestamps:
