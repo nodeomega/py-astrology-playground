@@ -286,7 +286,7 @@ class BodyTimestampRange(object):
 
     return result
 
-processDateTime = datetime(2023, 6, 12, 0, 0, 0)
+processDateTime = datetime(2023, 6, 19, 0, 0, 0)
 
 aspectsDict = {}
 with open("weeklyout\\{:04d}-{:02d}-{:02d}-weekly-aspects-table.txt".format(processDateTime.year, processDateTime.month, processDateTime.day), "r", encoding="utf-8") as r:

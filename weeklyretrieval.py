@@ -52,7 +52,7 @@ def ShouldFlipBodies(body1Name, body2Name):
 # get the desired time zone. I'm in PST/PDT (US), so I set for Los Angeles time.
 # Set the start time. I tend to do these from Monday to Sunday.
 # start datetime is inclusive, end datetime is exclusive for retrieval.
-tz, ltstart, ltend, utstart, utend = SetWeekDateRangeAndTimeZone("America/Los_Angeles", datetime(2023, 6, 12, 0, 0, 0))
+tz, ltstart, ltend, utstart, utend = SetWeekDateRangeAndTimeZone("America/Los_Angeles", datetime(2023, 6, 19, 0, 0, 0))
 
 utstring = FormatDateTimeString(utstart) 
 utendstring = FormatDateTimeString(utend) 
@@ -63,6 +63,9 @@ activeut = utstart
 inctd = timedelta(hours=1)
 while (activeut < utend):
   utstring = FormatDateTimeString(activeut)
+
+  #apiUrl = "http://localhost:7071/api/ViewChart"
+  apiUrl = "https://astrogearsapi.azurewebsites.net/api/ViewChart"
 
   #Get the data.
   # I'm running a local emulation of an azure function for this.
