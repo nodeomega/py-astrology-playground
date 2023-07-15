@@ -286,7 +286,7 @@ class BodyTimestampRange(object):
 
     return result
 
-processDateTime = datetime(2023, 12, 1, 0, 0, 0)
+processDateTime = datetime(2023, 6, 1, 0, 0, 0)
 
 aspectsDict = {}
 
@@ -294,7 +294,7 @@ with open("monthlyout\\{:04d}-{:02d}-01-monthly-aspects-table.txt".format(proces
   aspectsLog = r.readlines()
 
   for line in aspectsLog:
-    aspectMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) ([a-zA-Z]{3,20}) ([a-zA-Z0-9\s]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) \(Orb (\d{1,2}°\d{2}\'\d{2}")\)', line)
+    aspectMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s\*\-\']+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) ([a-zA-Z]{3,20}) ([a-zA-Z0-9\s\*\-\']+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3}) \(Orb (\d{1,2}°\d{2}\'\d{2}")\)', line)
 
     if aspectMatch:
       parsedAspectLine = MonthlyInLine(aspectMatch.group(1), aspectMatch.group(2), aspectMatch.group(3), aspectMatch.group(4), aspectMatch.group(5), aspectMatch.group(6), aspectMatch.group(7) == " Rx", aspectMatch.group(8),
@@ -316,7 +316,7 @@ with open("monthlyout\\{:04d}-{:02d}-01-monthly-bodies-table.txt".format(process
   bodiesLog = r.readlines()
 
   for line in bodiesLog:
-    bodyMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s\*\-]+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3})', line)
+    bodyMatch = re.search(r'(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[\+\-]\d{2}:\d{2}): ([a-zA-Z0-9\s\*\-\']+) (\d{2}) ([a-zA-Z]{3}) (\d{2})\'(\d{2}")([a-zA-Z\s]{0,3})', line)
 
     if bodyMatch:
       if bodyMatch.group(2).startswith("- "):

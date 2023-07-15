@@ -122,3 +122,29 @@ def SetWeekDateRangeAndTimeZone(targetTimeZone: str, localStartDateTime: datetim
     ltend = utend.astimezone(tz)
 
   return tz, ltstart, ltend, utstart, utend
+
+def SetPersonalSingleTransitDatesTimeZones(natalOrEntityTimeZone: str, natalOrEntityDateTime: datetime, transitTimeZone: str, transitDateTime: datetime):
+  """Sets the timezone and start/end times that will run when the retrieval function is run.\n 
+  Used for one week reports.\n
+  Returns:\n
+  tz1 = (_UTCclass | StaticTzInfo | DstTzInfo),\n
+  tz2 = (_UTCclass | StaticTzInfo | DstTzInfo),\n
+  ltbase = datetime (local start time),\n
+  lttransit = datetime (local transit time),\n
+  utbase = datetime (UTC start time),\n
+  uttransit = datetime (UTC transit time)\n
+  \n
+  Usage Example:\n
+  >>> tz1, tz2, ltbase, lttransit, utbase, uttransit = SetPersonalSingleTransitDatesTimeZones("America/Los_Angeles", datetime(2015, 11, 1, 0, 0, 0), "America/Los_Angeles", datetime(2023, 11, 1, 0, 0, 0))
+  """
+  #example: 2023-02-28T01:55:00Z
+  # get the starting utc time and local time. This will set the tone for DST.
+  tz1 = pytz.timezone(natalOrEntityTimeZone)
+  ltbase = tz1.localize(natalOrEntityDateTime)
+  utbase = ltbase.astimezone(pytz.utc)
+
+  tz2 = pytz.timezone(transitTimeZone)
+  lttransit = tz2.localize(transitDateTime)
+  uttransit = lttransit.astimezone(pytz.utc)
+
+  return tz1, tz2, ltbase, lttransit, utbase, uttransit
